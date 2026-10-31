@@ -1,0 +1,11 @@
+{
+  "_about": "Cells where the cached value was written by LibreOffice and LibreOffice is known to differ from Microsoft Excel. LibreOffice has no true/false cell type (TRUE is the number 1 shown as TRUE), so it counts TRUE inside ranges, and it rejects text typed directly into SUM. These entries apply ONLY while the file's cached values come from LibreOffice; once the file is re-saved in Excel, Excel's own cached values are checked instead. The 'excel' value is what Excel's documented rules give.",
+  "functions_coverage.xlsx": {
+    "Funcs!F1":  { "excel": 8.5, "rule": "SUM ignores logical values (A4 = TRUE) inside a range: 1 + 2 + 5.5" },
+    "Funcs!F2":  { "excel": 4, "rule": "SUM counts numbers, TRUE and number-text typed directly as arguments: 1 + 2 + 1" },
+    "Funcs!F3":  { "excel": 2.8333333333333335, "rule": "AVERAGE ignores logical values and text inside a range: (1 + 2 + 5.5) / 3" },
+    "Funcs!F16": { "excel": 6.694214876033056, "rule": "NPV ignores logical values inside a range, so there are 3 cash flows (1, 2, 5.5), not 4" },
+    "Funcs!F27": { "excel": 3, "rule": "COUNT does not count logical values inside a range" },
+    "Funcs!F56": { "excel": 2.8333333333333335, "rule": "follows from COUNT(A1:A6) = 3" }
+  }
+}
