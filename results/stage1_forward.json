@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-10-31T19:47:19.584Z",
+  "generatedAt": "2026-11-05T23:27:10.234Z",
   "machine": {
-    "os": "Linux 6.18.44-fc-v185",
-    "cpu": "Intel(R) Xeon(R) Processor",
+    "os": "Linux 6.18.44-fc-v242",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
     "cores": 4,
     "node": "v22.23.4"
   },
   "workbooks": [
     {
       "file": "functions_coverage.xlsx",
-      "cachedBy": "LibreOffice/24.2.7.2$Linux_X86_64 LibreOffice_project/420$Build-2 15.0000",
+      "cachedBy": "Microsoft Macintosh Excel 16.0300",
       "ok": true,
       "formulaCells": 64,
       "compared": 64,
@@ -17,72 +17,29 @@
       "mismatched": 0,
       "noCachedValue": 0,
       "tolerance": "|ours - cached| <= 1e-9 * max(1, |cached|)",
-      "maxAbsDiff": 1.9895196601282805e-13,
-      "maxScaledDiff": 5.190292640122607e-15,
-      "worstCell": "Funcs!F17",
+      "maxAbsDiff": 1.2327916465437738e-12,
+      "maxScaledDiff": 1.2158443374595043e-13,
+      "worstCell": "Funcs!F50",
       "circular": [],
       "cellsInOrDownstreamOfLoops": 0,
       "mismatchesOutsideLoops": 0,
       "calcSettings": {
-        "iterate": false,
-        "maxIterations": 100,
-        "maxChange": 0.0001
+        "iterate": true,
+        "maxIterations": 1000,
+        "maxChange": 1e-9
       },
       "unsupported": {},
       "dataTables": [],
-      "documentedLibreOfficeDifferences": [
-        {
-          "cell": "Funcs!F1",
-          "ours": 8.5,
-          "libreOfficeCached": 9.5,
-          "excelRule": 8.5,
-          "rule": "SUM ignores logical values (A4 = TRUE) inside a range: 1 + 2 + 5.5"
-        },
-        {
-          "cell": "Funcs!F2",
-          "ours": 4,
-          "libreOfficeCached": "#VALUE!",
-          "excelRule": 4,
-          "rule": "SUM counts numbers, TRUE and number-text typed directly as arguments: 1 + 2 + 1"
-        },
-        {
-          "cell": "Funcs!F3",
-          "ours": 2.8333333333333335,
-          "libreOfficeCached": 2.375,
-          "excelRule": 2.8333333333333335,
-          "rule": "AVERAGE ignores logical values and text inside a range: (1 + 2 + 5.5) / 3"
-        },
-        {
-          "cell": "Funcs!F16",
-          "ours": 6.694214876033056,
-          "libreOfficeCached": 7.06987227648385,
-          "excelRule": 6.694214876033056,
-          "rule": "NPV ignores logical values inside a range, so there are 3 cash flows (1, 2, 5.5), not 4"
-        },
-        {
-          "cell": "Funcs!F27",
-          "ours": 3,
-          "libreOfficeCached": 4,
-          "excelRule": 3,
-          "rule": "COUNT does not count logical values inside a range"
-        },
-        {
-          "cell": "Funcs!F56",
-          "ours": 2.8333333333333335,
-          "libreOfficeCached": 2.125,
-          "excelRule": 2.8333333333333335,
-          "rule": "follows from COUNT(A1:A6) = 3"
-        }
-      ],
+      "documentedLibreOfficeDifferences": [],
       "mismatches": [],
       "ms": {
-        "parse": 23.7,
+        "parse": 25.3,
         "recalc": 3
       }
     },
     {
       "file": "lbo_circular.xlsx",
-      "cachedBy": "LibreOffice/24.2.7.2$Linux_X86_64 LibreOffice_project/420$Build-2 15.0000",
+      "cachedBy": "Microsoft Macintosh Excel 16.0300",
       "ok": true,
       "formulaCells": 92,
       "compared": 92,
@@ -90,18 +47,18 @@
       "mismatched": 0,
       "noCachedValue": 0,
       "tolerance": "|ours - cached| <= 1e-9 * max(1, |cached|)",
-      "maxAbsDiff": 2.2737367544323206e-12,
-      "maxScaledDiff": 3.073217187875299e-13,
-      "worstCell": "Returns!B9",
+      "maxAbsDiff": 5.558717930398416e-10,
+      "maxScaledDiff": 1.0167190741721136e-10,
+      "worstCell": "Returns!B10",
       "circular": [
         {
           "size": 7,
-          "iterations": 35,
+          "iterations": 29,
           "converged": true,
-          "lastChange": 9.094947017729282e-13,
-          "fixedPointResidualOurs": 5.684341886080801e-13,
-          "fixedPointResidualCached": 2.2737367544323206e-13,
-          "worstCachedCell": "Model!C13",
+          "lastChange": 5.554738891078159e-10,
+          "fixedPointResidualOurs": 1.1664269550237805e-10,
+          "fixedPointResidualCached": 0,
+          "worstCachedCell": "Model!C12",
           "cells": [
             "Model!C10",
             "Model!C13",
@@ -114,11 +71,11 @@
         },
         {
           "size": 7,
-          "iterations": 35,
+          "iterations": 29,
           "converged": true,
-          "lastChange": 9.094947017729282e-13,
-          "fixedPointResidualOurs": 5.684341886080801e-13,
-          "fixedPointResidualCached": 2.4868995751603507e-14,
+          "lastChange": 5.758238330599852e-10,
+          "fixedPointResidualOurs": 1.1459633242338896e-10,
+          "fixedPointResidualCached": 0,
           "worstCachedCell": "Model!D12",
           "cells": [
             "Model!D10",
@@ -132,12 +89,12 @@
         },
         {
           "size": 7,
-          "iterations": 35,
+          "iterations": 29,
           "converged": true,
-          "lastChange": 9.663381206337363e-13,
-          "fixedPointResidualOurs": 5.684341886080801e-13,
-          "fixedPointResidualCached": 7.389644451905042e-13,
-          "worstCachedCell": "Model!E13",
+          "lastChange": 5.958327164989896e-10,
+          "fixedPointResidualOurs": 1.1175416148034856e-10,
+          "fixedPointResidualCached": 0,
+          "worstCachedCell": "Model!E12",
           "cells": [
             "Model!E10",
             "Model!E13",
@@ -150,12 +107,12 @@
         },
         {
           "size": 7,
-          "iterations": 36,
+          "iterations": 29,
           "converged": true,
-          "lastChange": 5.684341886080801e-13,
-          "fixedPointResidualOurs": 1.7053025658242404e-13,
-          "fixedPointResidualCached": 7.389644451905042e-13,
-          "worstCachedCell": "Model!F13",
+          "lastChange": 6.1555738284369e-10,
+          "fixedPointResidualOurs": 1.0788880899781361e-10,
+          "fixedPointResidualCached": 0,
+          "worstCachedCell": "Model!F12",
           "cells": [
             "Model!F10",
             "Model!F13",
@@ -168,12 +125,12 @@
         },
         {
           "size": 7,
-          "iterations": 36,
+          "iterations": 29,
           "converged": true,
-          "lastChange": 6.252776074688882e-13,
-          "fixedPointResidualOurs": 1.1368683772161603e-13,
-          "fixedPointResidualCached": 5.115907697472721e-13,
-          "worstCachedCell": "Model!G13",
+          "lastChange": 6.348841452563647e-10,
+          "fixedPointResidualOurs": 1.0294343155692331e-10,
+          "fixedPointResidualCached": 0,
+          "worstCachedCell": "Model!G12",
           "cells": [
             "Model!G10",
             "Model!G13",
@@ -189,21 +146,21 @@
       "mismatchesOutsideLoops": 0,
       "calcSettings": {
         "iterate": true,
-        "maxIterations": 100,
-        "maxChange": 1e-12
+        "maxIterations": 1000,
+        "maxChange": 1e-9
       },
       "unsupported": {},
       "dataTables": [],
       "documentedLibreOfficeDifferences": [],
       "mismatches": [],
       "ms": {
-        "parse": 12.4,
-        "recalc": 9.2
+        "parse": 10.7,
+        "recalc": 7
       }
     },
     {
       "file": "three_statement.xlsx",
-      "cachedBy": "LibreOffice/24.2.7.2$Linux_X86_64 LibreOffice_project/420$Build-2 15.0000",
+      "cachedBy": "Microsoft Macintosh Excel 16.0300",
       "ok": true,
       "formulaCells": 242,
       "compared": 242,
@@ -211,24 +168,24 @@
       "mismatched": 0,
       "noCachedValue": 0,
       "tolerance": "|ours - cached| <= 1e-9 * max(1, |cached|)",
-      "maxAbsDiff": 4.092726157978177e-12,
-      "maxScaledDiff": 3.690507720104837e-15,
-      "worstCell": "'Balance Sheet'!F9",
+      "maxAbsDiff": 4.547473508864641e-13,
+      "maxScaledDiff": 2.72249558077381e-16,
+      "worstCell": "Valuation!B13",
       "circular": [],
       "cellsInOrDownstreamOfLoops": 0,
       "mismatchesOutsideLoops": 0,
       "calcSettings": {
-        "iterate": false,
-        "maxIterations": 100,
-        "maxChange": 0.0001
+        "iterate": true,
+        "maxIterations": 1000,
+        "maxChange": 1e-9
       },
       "unsupported": {},
       "dataTables": [],
       "documentedLibreOfficeDifferences": [],
       "mismatches": [],
       "ms": {
-        "parse": 14.6,
-        "recalc": 0.4
+        "parse": 15.5,
+        "recalc": 0.9
       }
     }
   ]
