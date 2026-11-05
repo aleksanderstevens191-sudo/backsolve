@@ -43,9 +43,9 @@ Pass rule: `|AD − FD| ≤ 1e-6 × max(|AD|, |FD|)`; FD = central differences a
 | Gradient pairs checked, function coverage | 846: 748 exactly 0, 88 within 1e-6, 10 excluded (XNPV integer dates), 0 failed | `results/stage2_gradients.json` | M1 | ✅ |
 | Worst relative error among passing pairs (3 test workbooks) | 6.7e-9 | `results/stage2_gradients.json` | M1 | ✅ |
 | Loop fixed-point residual before differentiating (LBO) | ≤ 2.2e-16 (scaled) | `results/stage2_gradients.json` (`tape.loops`) | M1 | ✅ |
-| Speed-up, tape vs one recalc per input, three-statement (66 inputs) | 22× (14.9 ms vs 0.671 ms) | `results/stage2_gradients.json` (`benchmark`) | M1 | ✅ ±30% run to run |
-| Speed-up, synthetic DCF with 2,105 inputs | 761× (2,696 ms vs 3.54 ms) | `results/stage2_gradients.json` | M1 | ✅ synthetic model, no Excel file |
-| Unit tests | 49 Stage 1 + 16 Stage 2, all passing | `npm test` | M1 | ✅ |
+| Speed-up, tape vs one recalc per input, three-statement (66 inputs) | 28× (14.8 ms vs 0.528 ms) | `results/stage2_gradients.json` (`benchmark`) | M1 | ✅ ±30% run to run |
+| Speed-up, synthetic DCF with 2,105 inputs | 874× (3,075 ms vs 3.52 ms) | `results/stage2_gradients.json` | M1 | ✅ synthetic model, no Excel file |
+| Unit tests | 49 Stage 1 + 21 Stage 2, all passing | `npm test` | M1 | ✅ |
 | Gradient check on CFI DCF / SEC workbooks | — | — | — | ⏳ need the files |
 
 ## Model outputs (reference only, not claims)

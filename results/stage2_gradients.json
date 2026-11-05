@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T23:49:54.783Z",
+  "generatedAt": "2026-11-05T23:54:42.201Z",
   "machine": {
     "os": "Linux 6.18.44-fc-v242",
     "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
@@ -11,12 +11,14 @@
     {
       "workbook": "functions_coverage.xlsx",
       "tape": {
-        "nodes": 83,
+        "nodes": 91,
         "inputs": 18,
-        "kinks": 32,
+        "kinks": 40,
         "circularBlocks": 0,
         "forwardMismatches": [],
-        "warnings": [],
+        "warnings": [
+          "Funcs!F20: an input-driven number is joined into text with &; derivatives through it are not tracked (reported as 0)"
+        ],
         "loops": []
       },
       "gradientCheck": {
@@ -139,8 +141,8 @@
       },
       "kinksWholeWorkbook": {
         "nearPct": 5,
-        "total": 32,
-        "movable": 32,
+        "total": 40,
+        "movable": 40,
         "near": [
           {
             "cell": "Funcs!F19",
@@ -306,12 +308,12 @@
       },
       "benchmark": {
         "inputs": 18,
-        "recalcMs": 0.089616000000035,
-        "recordTapeMs": 0.1865819999999303,
-        "backwardMs": 0.0007520000000340588,
-        "finiteDifferenceGradientMs": 1.702704000000665,
-        "tapeGradientMs": 0.18733399999996436,
-        "speedup": 9.089134914115904,
+        "recalcMs": 0.0830310000000054,
+        "recordTapeMs": 0.16982899999993606,
+        "backwardMs": 0.0007630000000062864,
+        "finiteDifferenceGradientMs": 1.5775890000001027,
+        "tapeGradientMs": 0.17059199999994235,
+        "speedup": 9.24773142937908,
         "note": "medians; FD gradient = one baseline recalc + one recalc per input (forward differences, the cheapest FD); tape gradient = one recording pass + one backward pass"
       }
     },
@@ -781,21 +783,21 @@
       },
       "benchmark": {
         "inputs": 16,
-        "recalcMs": 0.09958399999982248,
-        "recordTapeMs": 0.30407100000002174,
-        "backwardMs": 0.00839999999993779,
-        "finiteDifferenceGradientMs": 1.6929279999969822,
-        "tapeGradientMs": 0.31247099999995953,
-        "speedup": 5.417872378547774,
+        "recalcMs": 0.10144300000001749,
+        "recordTapeMs": 0.3185230000001411,
+        "backwardMs": 0.0077810000000226864,
+        "finiteDifferenceGradientMs": 1.7245310000002974,
+        "tapeGradientMs": 0.3263040000001638,
+        "speedup": 5.285044008039839,
         "note": "medians; FD gradient = one baseline recalc + one recalc per input (forward differences, the cheapest FD); tape gradient = one recording pass + one backward pass"
       }
     },
     {
       "workbook": "three_statement.xlsx",
       "tape": {
-        "nodes": 449,
+        "nodes": 455,
         "inputs": 66,
-        "kinks": 49,
+        "kinks": 55,
         "circularBlocks": 0,
         "forwardMismatches": [],
         "warnings": [],
@@ -1034,13 +1036,13 @@
       },
       "kinksWholeWorkbook": {
         "nearPct": 5,
-        "total": 49,
-        "movable": 37,
+        "total": 55,
+        "movable": 43,
         "near": [
           {
             "cell": "Valuation!B17",
             "kind": "MAX",
-            "detail": "picks argument 5 of 5; runner-up is argument 4, gap 32.92627968000011",
+            "detail": "picks argument 5 of 5; gap to argument 4 is 32.92627968000011",
             "margin": 32.92627968000011,
             "onKink": false,
             "movable": true,
@@ -1056,7 +1058,7 @@
           {
             "cell": "Valuation!B16",
             "kind": "MIN",
-            "detail": "picks argument 1 of 5; runner-up is argument 2, gap 33.96599999999992",
+            "detail": "picks argument 1 of 5; gap to argument 2 is 33.96599999999992",
             "margin": 33.96599999999992,
             "onKink": false,
             "movable": true,
@@ -1066,6 +1068,22 @@
               "value": 0.41,
               "absChange": 0.02939252336448591,
               "pctChange": 7.16890813767949
+            },
+            "near": true
+          },
+          {
+            "cell": "Valuation!B17",
+            "kind": "MAX",
+            "detail": "picks argument 5 of 5; gap to argument 3 is 48.23797968000008",
+            "margin": 48.23797968000008,
+            "onKink": false,
+            "movable": true,
+            "uniformMovePct": 3.002091045630461,
+            "nearestInput": {
+              "addr": "Assumptions!G6",
+              "value": 0.43,
+              "absChange": 0.03606227106227111,
+              "pctChange": 8.386574665644444
             },
             "near": true
           },
@@ -1084,17 +1102,33 @@
               "pctChange": 27.684536449458164
             },
             "near": true
+          },
+          {
+            "cell": "Valuation!B16",
+            "kind": "MIN",
+            "detail": "picks argument 1 of 5; gap to argument 3 is 68.63399999999993",
+            "margin": 68.63399999999993,
+            "onKink": false,
+            "movable": true,
+            "uniformMovePct": 4.700320690702924,
+            "nearestInput": {
+              "addr": "Assumptions!E6",
+              "value": 0.42,
+              "absChange": 0.056030682419326336,
+              "pctChange": 13.340638671268175
+            },
+            "near": true
           }
         ]
       },
       "benchmark": {
         "inputs": 66,
-        "recalcMs": 0.22207299999990937,
-        "recordTapeMs": 0.6682960000002822,
-        "backwardMs": 0.003040000000055443,
-        "finiteDifferenceGradientMs": 14.878890999993928,
-        "tapeGradientMs": 0.6713360000003377,
-        "speedup": 22.163106104821498,
+        "recalcMs": 0.2214449999999033,
+        "recordTapeMs": 0.5246480000000702,
+        "backwardMs": 0.0030480000000352447,
+        "finiteDifferenceGradientMs": 14.836814999993521,
+        "tapeGradientMs": 0.5276960000001054,
+        "speedup": 28.11621653374397,
         "note": "medians; FD gradient = one baseline recalc + one recalc per input (forward differences, the cheapest FD); tape gradient = one recording pass + one backward pass"
       }
     },
@@ -1371,12 +1405,12 @@
       },
       "benchmark": {
         "inputs": 215,
-        "recalcMs": 0.13595399999985602,
-        "recordTapeMs": 0.36521399999992354,
-        "backwardMs": 0.008675999999923079,
-        "finiteDifferenceGradientMs": 29.3660639999689,
-        "tapeGradientMs": 0.3738899999998466,
-        "speedup": 78.5419882852736,
+        "recalcMs": 0.1303989999996702,
+        "recordTapeMs": 0.3610800000001291,
+        "backwardMs": 0.005000999999992928,
+        "finiteDifferenceGradientMs": 28.166183999928762,
+        "tapeGradientMs": 0.366081000000122,
+        "speedup": 76.939759233392,
         "note": "medians; FD gradient = one baseline recalc + one recalc per input (forward differences, the cheapest FD); tape gradient = one recording pass + one backward pass"
       }
     },
@@ -3543,12 +3577,12 @@
       },
       "benchmark": {
         "inputs": 2105,
-        "recalcMs": 1.2799509999986185,
-        "recordTapeMs": 3.4993540000014036,
-        "backwardMs": 0.040989999999510474,
-        "finiteDifferenceGradientMs": 2695.5768059970906,
-        "tapeGradientMs": 3.540344000000914,
-        "speedup": 761.3883865512488,
+        "recalcMs": 1.4598859999987326,
+        "recordTapeMs": 3.478095000000394,
+        "backwardMs": 0.04038799999943876,
+        "finiteDifferenceGradientMs": 3074.519915997331,
+        "tapeGradientMs": 3.518482999999833,
+        "speedup": 873.8197444743877,
         "note": "medians; FD gradient = one baseline recalc + one recalc per input (forward differences, the cheapest FD); tape gradient = one recording pass + one backward pass"
       }
     }

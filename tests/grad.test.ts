@@ -81,6 +81,38 @@ describe('tape: hand-derived derivatives', () => {
   });
 });
 
+describe('review fixes', () => {
+  it('& turns a number into text: warn that the derivative is not tracked', () => {
+    const { g } = grad({ A1: 3, Z1: '=(A1&"")*2' });
+    expect(g.warnings.join()).toMatch(/joined into text/);
+  });
+  it('MIN/MAX: a kink against a constant competitor is still found', () => {
+    // MIN(0, 1, A1-100) with A1 = 102 picks 0; dropping A1 by 2 makes A1-100 the minimum.
+    const { g } = grad({ A1: 102, Z1: '=MIN(0,1,A1-100)' });
+    const k = g.kinkReport()[0];
+    expect(k.movable).toBe(true);
+    expect(k.nearestInput!.absChange).toBeCloseTo(2, 12);
+  });
+  it('ROUND exactly on a half step is a movable kink', () => {
+    const { g } = grad({ A1: 1.5, Z1: '=ROUND(A1,0)' });
+    expect(g.kinkReport()[0]).toMatchObject({ onKink: true, movable: true, near: true });
+  });
+  it('an input cell as the output has derivative 1 with respect to itself', () => {
+    const { g } = grad({ A1: 3, Z1: '=A1*2' });
+    expect(g.gradientByAddr('S!A1')).toEqual({ 'S!A1': 1 });
+    expect(g.gradient('S!A1').value).toBe(3);
+  });
+  it('a loop that never converges is rejected, not differentiated', () => {
+    const input: WorkbookInput = {
+      sheets: [{ name: 'S', cells: new Map([['A1', { value: 1 }], ['Z1', { formula: 'A1+0.9999*Z1', value: null }]]) }],
+      names: [], calc: { iterate: true, maxIterations: 100, maxChange: 1e-12 },
+    };
+    const wb = new Workbook(input);
+    wb.recalc();
+    expect(() => new Gradients(wb)).toThrow(/did not converge/);
+  });
+});
+
 describe('circular references: implicit function theorem at the fixed point', () => {
   it('one-cell loop x = p + 0.5x gives x = 2p, dx/dp = 2', () => {
     const { d } = grad({ A1: 3, Z1: '=A1+0.5*Z1' }, 'S!Z1', true);

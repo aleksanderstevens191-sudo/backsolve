@@ -136,6 +136,7 @@ export class Recorder {
       if (typeof y === 'number' && typeof c.value === 'number') residual = Math.max(residual, Math.abs(y - c.value) / Math.max(1, Math.abs(c.value)));
       else if (y !== c.value && !(y instanceof XLError && c.value instanceof XLError && y.code === c.value.code)) residual = Infinity;
     });
+    if (residual > 1e-12) this.warnings.push(`circular block ${fullAddr(comp[0].sheet, comp[0].row, comp[0].col)} (+${comp.length - 1}): values are not a fixed point (scaled residual ${residual.toExponential(1)}); its implicit derivatives are not reliable`);
     // Numeric cells whose formula ended up not depending on anything still need a node.
     const yNodes = ys.map((y, k) => (leaves[k] === null ? null : y instanceof Dual ? y : t.leaf(numVal(y as number))));
     const hi = t.size;
@@ -304,6 +305,9 @@ export class Recorder {
 
   scalarOp(op: string, a: DS, b: DS, ctx: Ctx): DS {
     if (op === '&') {
+      // Text carries no derivative. If an input-driven number is turned into text (and maybe back
+      // into a number later), say so instead of silently reporting a slope of 0.
+      if (a instanceof Dual || b instanceof Dual) this.warnings.push(`${ctx.cell}: an input-driven number is joined into text with &; derivatives through it are not tracked (reported as 0)`);
       const x = toText(plain(a)), y = toText(plain(b));
       if (isError(x)) return x; if (isError(y)) return y;
       return x + y;
@@ -427,13 +431,14 @@ function minMax(ev: Recorder, xs: (number | Dual)[], ctx: Ctx, kind: 'MIN' | 'MA
   const better = kind === 'MIN' ? (b: number, a: number) => b < a : (b: number, a: number) => b > a;
   let k = 0;
   for (let i = 1; i < xs.length; i++) if (better(numVal(xs[i]), numVal(xs[k]))) k = i;
-  if (xs.length > 1) {
-    // Runner-up: the best of the others. The branch flips when the gap between them hits zero.
-    let r = k === 0 ? 1 : 0;
-    for (let i = 0; i < xs.length; i++) if (i !== k && better(numVal(xs[i]), numVal(xs[r]))) r = i;
-    const sign = kind === 'MIN' ? 1 : -1;
+  // The branch flips when the picked argument's gap to ANY other argument hits zero. The runner-up
+  // by value isn't necessarily the closest in input space (it may be a constant), so record one
+  // margin per competitor that an input can move.
+  const sign = kind === 'MIN' ? 1 : -1;
+  for (let r = 0; r < xs.length; r++) {
+    if (r === k || !(xs[r] instanceof Dual || xs[k] instanceof Dual)) continue;
     const gap = sign * (numVal(xs[r]) - numVal(xs[k]));
-    ev.kink(ctx, kind, `picks argument ${k + 1} of ${xs.length}; runner-up is argument ${r + 1}, gap ${gap}`, ev.mk(gap, [[xs[r], sign], [xs[k], -sign]]));
+    ev.kink(ctx, kind, `picks argument ${k + 1} of ${xs.length}; gap to argument ${r + 1} is ${gap}`, ev.mk(gap, [[xs[r], sign], [xs[k], -sign]]));
   }
   return xs[k];
 }
@@ -565,7 +570,8 @@ export const AD_FUNCTIONS: Record<string, AdFn> = {
     // ROUND is a staircase: slope 0, with a kink at every half-step boundary.
     if (x instanceof Dual) {
       const dist = Math.abs(y - Math.floor(y) - 0.5) / f;
-      const s = Math.sign(y - Math.floor(y) - 0.5) * (xv < 0 ? -1 : 1);
+      // Signed so the slope is never 0, even exactly on a half step (where dist = 0).
+      const s = (y - Math.floor(y) - 0.5 >= 0 ? 1 : -1) * (xv < 0 ? -1 : 1);
       ev.kink(ctx, 'ROUND', `rounds ${xv} to ${Math.trunc(numVal(d))} digits`, ev.mk(dist, [[x, s]]));
     }
     return (Math.sign(xv) * r) / f;

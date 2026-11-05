@@ -67,7 +67,8 @@ We report the derivative of the branch Excel actually took, and we list every su
 the inputs can move, with how close it is to flipping:
 
 - **margin**: a number that crosses zero exactly where the branch flips (for `A > B` it is `A − B`;
-  for `MIN` it is the gap between the smallest and the runner-up).
+  for `MIN` there is one margin per competing argument: its gap to the smallest, because the
+  closest boundary in input space isn't always the runner-up by value).
 - **uniform move %**: to first order, if every input moved by this percentage in the worst
   direction, the branch would flip. We flag a kink as **near** at ≤ 5%.
 - **nearest input**: the single input that reaches the kink with the smallest move, and the move.
@@ -114,11 +115,11 @@ On the coverage workbook, the 10 are XNPV dates (integers, so every nudge crosse
 
 | Workbook | inputs | one recalc | FD gradient (inputs + 1 recalcs) | tape: record + backward | speed-up |
 |---|---|---|---|---|---|
-| functions_coverage | 18 | 0.090 ms | 1.70 ms | 0.187 ms | 9× |
-| lbo_circular | 16 | 0.100 ms | 1.69 ms | 0.312 ms | 5× |
-| three_statement | 66 | 0.222 ms | 14.9 ms | 0.671 ms | 22× |
-| synthetic, 10 segments | 215 | 0.136 ms | 29.4 ms | 0.374 ms | 79× |
-| synthetic, 100 segments | 2,105 | 1.28 ms | 2,696 ms | 3.54 ms | 761× |
+| functions_coverage | 18 | 0.083 ms | 1.58 ms | 0.171 ms | 9× |
+| lbo_circular | 16 | 0.101 ms | 1.72 ms | 0.326 ms | 5× |
+| three_statement | 66 | 0.221 ms | 14.8 ms | 0.528 ms | 28× |
+| synthetic, 10 segments | 215 | 0.130 ms | 28.2 ms | 0.366 ms | 77× |
+| synthetic, 100 segments | 2,105 | 1.46 ms | 3,075 ms | 3.52 ms | 874× |
 
 Medians on M1 (cloud container, Intel Xeon 2.10GHz, 4 cores, Node 22). Timings at this scale vary
 by roughly ±30% between runs; the trend is the point: the tape costs about 3 recalculations, finite
@@ -129,7 +130,7 @@ how the cost scales.
 
 ### Unit tests (`tests/grad.test.ts`)
 
-Hand-derived derivatives (calculus, not our engine) for arithmetic, `^` in both arguments, SUM,
+21 tests. Hand-derived derivatives (calculus, not our engine) for arithmetic, `^` in both arguments, SUM,
 AVERAGE, SUMPRODUCT, NPV (rate and flows), IRR (implicit function theorem), IF branches, MIN/MAX
 ties, ABS, ROUND; one- and two-cell loops with exact answers (e.g. `x = p + 0.5x` gives `dx/dp = 2`);
 a kink inside a loop; and the share price / IRR of the real test workbooks vs finite differences.
@@ -141,13 +142,18 @@ a kink inside a loop; and the share price / IRR of the real test workbooks vs fi
   tests on counters always do).
 - **Three-statement**: nothing near the share price. Elsewhere, "Lowest EBITDA" (MIN) and "Highest
   EBITDA" (MAX) are 2.5% and 2.0% from switching years, and the terminal-value sanity flag is 4.1%
-  away.
+  away (5 near kinks in total, counting each MIN/MAX competitor separately).
 
 ## Limits (reported, not hidden)
 
 - Derivatives with respect to constants typed inside a formula or a named formula (e.g. a name
   defined as `=0.09`) aren't tracked; only input *cells* are.
 - `x^y` with `x ≤ 0` and an input-driven `y` has no slope in `y`; we set it to 0 and add a warning.
+- Numbers joined into text with `&` lose their derivative (reported as 0, with a warning), even if
+  the text is later turned back into a number.
+- A circular block that doesn't converge is refused: `new Gradients(wb)` throws instead of returning
+  a derivative for a loop that never settled. A recorded loop residual above 1e-12 adds a warning.
+- Asking for the gradient of an input cell itself gives 1 for that cell, 0 elsewhere.
 - Array formulas inside a circular block aren't supported (none in the test workbooks); they throw.
 - The CFI DCF workbook (still waiting for the file) and the SEC workbooks (Stage 4) get the same check
   when they arrive.

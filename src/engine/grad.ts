@@ -54,7 +54,13 @@ export class Gradients {
    * derivative is taken at a true fixed point.
    */
   constructor(public readonly wb: Workbook, opts: { resolve?: boolean; allInputs?: boolean } = {}) {
-    if (opts.resolve !== false) wb.recalc({ tight: true, cycleStart: 'current' });
+    if (opts.resolve !== false) {
+      wb.recalc({ tight: true, cycleStart: 'current' });
+      // The implicit derivative is only meaningful at a fixed point: refuse rather than return
+      // a confident-looking number for a loop that never settled.
+      const bad = wb.cycles.filter((c) => !c.converged);
+      if (bad.length) throw new Error(`circular block(s) did not converge, so gradients through them are undefined: ${bad.map((c) => `${c.cells[0]} (+${c.cells.length - 1} cells, last change ${c.lastChange.toExponential(1)} after ${c.iterations} iterations)`).join('; ')}`);
+    }
     const t0 = performance.now();
     this.rec = new Recorder(wb);
     if (opts.allInputs) this.rec.addAllInputs();
@@ -82,7 +88,8 @@ export class Gradients {
 
   /** The output's tape node, or null if no input can change it. */
   nodeFor(cell: Cell): Dual | number | null {
-    const v = this.rec.nodeOf.get(cell);
+    // An input cell is its own tape leaf (derivative 1 with respect to itself).
+    const v = cell.node || cell.arrayMaster || cell.parseError ? this.rec.nodeOf.get(cell) : typeof cell.value === 'number' ? this.rec.read(cell.sheet, cell.row, cell.col) : cell.value;
     if (v instanceof Dual) return v;
     return typeof v === 'number' ? v : null;
   }
