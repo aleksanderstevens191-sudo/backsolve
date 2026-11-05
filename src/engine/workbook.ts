@@ -44,7 +44,22 @@ export interface CycleReport { cells: string[]; iterations: number; converged: b
 
 export interface RecalcOptions {
   /** Where circular cells start before iterating. 'zero' (default) proves we really solve the loop. */
-  cycleStart?: 'zero' | 'cached';
+  cycleStart?: 'zero' | 'cached' | 'current';
+  /**
+   * Solve circular blocks to machine precision instead of stopping at the workbook's Max Change.
+   * Used for gradients: the implicit-function derivative is exact only at a true fixed point, and
+   * finite differences on a loop that stops at 1e-9 would mostly measure iteration noise.
+   */
+  tight?: boolean;
+}
+
+/** Scaled change between two loop-cell values: relative for big numbers, absolute near zero. */
+function loopChange(before: Scalar, after: Scalar, scaled: boolean): number {
+  if (typeof before === 'number' && typeof after === 'number') {
+    const d = Math.abs(after - before);
+    return scaled ? d / Math.max(1, Math.abs(after)) : d;
+  }
+  return before === after ? 0 : Infinity;
 }
 
 class Sheet {
@@ -308,20 +323,27 @@ export class Workbook implements Evaluator {
         this.cycles.push({ cells, iterations: 0, converged: false, lastChange: NaN });
         continue;
       }
-      if ((opts.cycleStart ?? 'zero') === 'zero') for (const c of comp) c.value = 0;
-      else for (const c of comp) c.value = c.cached;
-      let it = 0, change = Infinity;
-      while (it < this.calc.maxIterations) {
+      const start = opts.cycleStart ?? 'zero';
+      if (start === 'zero') for (const c of comp) c.value = 0;
+      else if (start === 'cached') for (const c of comp) c.value = c.cached;
+      else for (const c of comp) if (typeof c.value !== 'number') c.value = 0;
+      // Tight mode: keep sweeping until the scaled change is at rounding level (1e-15), or stops improving.
+      const tight = !!opts.tight;
+      const maxIt = tight ? Math.max(this.calc.maxIterations, 10000) : this.calc.maxIterations;
+      const target = tight ? 1e-15 : this.calc.maxChange;
+      let it = 0, change = Infinity, best = Infinity, sinceBest = 0;
+      while (it < maxIt) {
         it++; change = 0;
         for (const c of comp) {
           const before = c.value;
           this.evalCell(c);
-          const d = typeof before === 'number' && typeof c.value === 'number' ? Math.abs(c.value - before) : before === c.value ? 0 : Infinity;
+          const d = loopChange(before, c.value, tight);
           if (d > change) change = d;
         }
-        if (change < this.calc.maxChange) break;
+        if (change <= target && (tight || change < target)) break;
+        if (tight) { if (change < best) { best = change; sinceBest = 0; } else if (++sinceBest >= 50 && best <= 1e-13) break; }
       }
-      this.cycles.push({ cells, iterations: it, converged: change < this.calc.maxChange, lastChange: change });
+      this.cycles.push({ cells, iterations: it, converged: tight ? change <= 1e-13 : change < this.calc.maxChange, lastChange: change });
     }
   }
 

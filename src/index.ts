@@ -14,3 +14,6 @@ export function loadWorkbook(bytes: Uint8Array) {
   const { input, report } = readXlsx(bytes);
   return { wb: new Workbook(input), report };
 }
+export { Gradients } from './engine/grad';
+export type { KinkReport, GradientResult } from './engine/grad';
+export { Tape, Dual } from './engine/tape';
