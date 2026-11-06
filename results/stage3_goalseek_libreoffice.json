@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-11-06T03:43:19.022213+00:00",
+  "engine": "LibreOffice 24.2.7.2",
+  "machine": "Linux 6.18.44-fc-v242, Python 3.13.18",
+  "note": "LibreOffice Goal Seek (XGoalSeek.seekGoal), not Excel. Second opinion only.",
+  "cases": [
+    {
+      "id": "gs1",
+      "file": "gs1_three_statement_growth.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Assumptions!C5",
+      "start": 0.08,
+      "libreofficeAnswer": 0.2314723649825472,
+      "libreofficeDivergence": 0.0,
+      "setCellAfterwards": 30.000000000000018,
+      "missBy": 1.7763568394002505e-14,
+      "recalcPassesAfterwards": 2,
+      "ms": 60.50285499998154
+    },
+    {
+      "id": "gs2",
+      "file": "gs2_three_statement_terminal_growth.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Valuation!B4",
+      "start": 0.025,
+      "libreofficeAnswer": 0.034115275752115364,
+      "libreofficeDivergence": 0.0,
+      "setCellAfterwards": 29.999999998391125,
+      "missBy": -1.6088748111542372e-09,
+      "recalcPassesAfterwards": 2,
+      "ms": 0.7858430000169392
+    },
+    {
+      "id": "gs3",
+      "file": "gs3_three_statement_wacc.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Valuation!B3",
+      "start": 0.09,
+      "libreofficeAnswer": 0.08261637706526173,
+      "libreofficeDivergence": 0.0,
+      "setCellAfterwards": 29.99999999990897,
+      "missBy": -9.103118259190524e-11,
+      "recalcPassesAfterwards": 2,
+      "ms": 0.7166269999743236
+    },
+    {
+      "id": "gs4",
+      "file": "gs4_lbo_margin_step.xlsx",
+      "setCell": "Returns!B8",
+      "toValue": 0.2,
+      "changingCell": "Inputs!B10",
+      "start": 0.005,
+      "libreofficeAnswer": 0.005128652659766912,
+      "libreofficeDivergence": 0.0,
+      "setCellAfterwards": 0.1999940498076982,
+      "missBy": -5.950192301817925e-06,
+      "recalcPassesAfterwards": 10,
+      "ms": 1.2585890000309519
+    }
+  ]
+}
