@@ -17,3 +17,5 @@ export function loadWorkbook(bytes: Uint8Array) {
 export { Gradients } from './engine/grad';
 export type { KinkReport, GradientResult } from './engine/grad';
 export { Tape, Dual } from './engine/tape';
+export { Backsolver, goalSeek, defaultSigma } from './engine/solve';
+export type { DriverSpec, DriverMode, SolverOptions, SolveResult, DriverResult, DriverKink, CurveResult, CurveBranch, CurvePoint } from './engine/solve';
