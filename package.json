@@ -6,6 +6,7 @@
     "test": "vitest run",
     "typecheck": "tsc",
     "check": "tsx scripts/check.ts",
+    "stage2": "tsx scripts/stage2.ts",
     "make-workbooks": "python3 scripts/make_workbooks.py"
   },
   "keywords": [],
