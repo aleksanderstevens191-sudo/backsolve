@@ -106,6 +106,42 @@ describe('several free inputs: closest point to the base case that hits the targ
     // Along a·b = 4 at (2, 2), the squared distance to (1, 1) curves upward: a true minimum.
     expect(r.reducedHessianMinEig!).toBeGreaterThan(0.1);
   });
+  it('flat base case already on target: a² + b² = 0 at (0, 0) returns the base case, no move', () => {
+    const wb = book({ A1: 0, A2: 0, Z1: '=A1^2+A2^2' });
+    const s = new Backsolver(wb, 'S!Z1', [{ name: 'a', cells: 'S!A1', sigma: 1 }, { name: 'b', cells: 'S!A2', sigma: 1 }]);
+    const r = s.solve(0);
+    expect(r.converged).toBe(true);
+    expect(r.d).toEqual([0, 0]);
+    expect(r.distance).toBe(0);
+  });
+  it('flat base case, target elsewhere: from (0, 0) to a² + 4b² = 4, the closest points are (0, ±1)', () => {
+    // Zero slope at the base, but the output moves further out. On the ellipse a² + 4b² = 4 the
+    // squared distance to the origin is a² + b² = 4 − 3b², smallest at b = ±1 (distance 1); the
+    // other stationary points (±2, 0) are the farthest.
+    const wb = book({ A1: 0, A2: 0, Z1: '=A1^2+4*A2^2' });
+    const s = new Backsolver(wb, 'S!Z1', [{ name: 'a', cells: 'S!A1', sigma: 1 }, { name: 'b', cells: 'S!A2', sigma: 1 }]);
+    const r = s.solve(4);
+    expect(r.converged).toBe(true);
+    expect(Math.abs(r.missBy)).toBeLessThan(1e-12);
+    expect(Math.abs(r.d[0])).toBeLessThan(1e-12);
+    expect(Math.abs(Math.abs(r.d[1]) - 1)).toBeLessThan(1e-12);
+    expect(r.reducedHessianMinEig!).toBeGreaterThan(0.1);
+    expect(r.warnings.some((w) => w.startsWith('flat base case'))).toBe(true);
+    expect(wb.getCell('S', 'Z1')!.value).toBe(0);
+  });
+  it('flat base case on a circle: a² + b² = 4 from (0, 0) is hit at distance 2, and flagged as a tie', () => {
+    const wb = book({ A1: 0, A2: 0, Z1: '=A1^2+A2^2' });
+    const s = new Backsolver(wb, 'S!Z1', [{ name: 'a', cells: 'S!A1', sigma: 1 }, { name: 'b', cells: 'S!A2', sigma: 1 }]);
+    const r = s.solve(4);
+    expect(r.converged).toBe(true);
+    expect(Math.abs(r.distance - 2)).toBeLessThan(1e-12);
+    expect(r.warnings.some((w) => w.startsWith('tie:'))).toBe(true);
+  });
+  it('an output that truly ignores the drivers is refused', () => {
+    const wb = book({ A1: 0, A2: 0, Z1: '=0*A1+5' });
+    const s = new Backsolver(wb, 'S!Z1', [{ name: 'a', cells: 'S!A1', sigma: 1 }, { name: 'b', cells: 'S!A2', sigma: 1 }]);
+    expect(() => s.solve(6)).toThrow(/does not depend on any driver/);
+  });
   it('scale drivers: SUM of three cells scaled by (1 + d) to hit 9 from 6 needs d = 0.5', () => {
     const wb = book({ A1: 1, A2: 2, A3: 3, Z1: '=SUM(A1:A3)' });
     const s = new Backsolver(wb, 'S!Z1', [{ name: 'all', cells: 'S!A1:A3', mode: 'scale' }]);

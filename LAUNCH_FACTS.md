@@ -61,15 +61,15 @@ Rules: target hit when `|output − target| ≤ 1e-12 × max(1, |target|)`; clos
 | Same, margins stickier (σ_margin = 0.5 pp) | growth +2.470 pp, gross margin +0.814 pp, distance 2.958 | `closestPoint[1]` | M1 | ✅ |
 | Same, four drivers (growth, gross margin, SG&A, capex; σ = 1 pp) | +0.530, +0.629, −0.627, −0.836 pp; distance 1.330 | `closestPoint[2]` | M1 | ✅ |
 | LBO, IRR 19.89% → 20%, growth + margin step + exit multiple | +0.011 pp, +0.0034 pp, +0.020x; distance 0.0265 | `closestPoint[3]` | M1 | ✅ |
-| Closest-point answers hit the target | worst miss 8.1e-13 (LBO IRR); tangency ≤ 7.7e-10; curvature along the price surface ≥ 1.000 (true minimum) | `closestPoint[].result` | M1 | ✅ |
+| Closest-point answers hit the target | worst miss 8.1e-13 (LBO IRR); tangency ≤ 7.7e-10; curvature along the price surface 1.0 to 1.04 (positive: a true minimum) | `closestPoint[].result` | M1 | ✅ |
 | Brute force finds nothing closer | 2 drivers: closest traced point 2.16514 vs 2.16275 and 2.95795 vs 2.95764; 3+ drivers: 360 rays (131 reached) closest 1.33135 vs 1.32998, 210 rays (114 reached) closest 0.026526 vs 0.026516 | `closestPoint[].bruteForce` | M1 | ✅ |
 | Every growth/margin pair for $30, three-statement (WACC 8 / 9 / 10%) | 122 / 130 / 137 points, one piece each; grid check 62/62, 66/66, 70/70 crossings covered; worst miss 5.3e-14 | `curves[0]`, `waccPlusMinus1pp.curves` | M1 | ✅ |
 | Every growth/margin-step pair for 20% IRR, LBO | 120 points, one piece; 68/68 grid crossings covered; worst miss 3.5e-13 | `curves[1]` | M1 | ✅ |
 | Implied average growth for $30 (growth only) at WACC 8% / 9% / 10% | 4.67% / 9.57% / 14.07% (base case 6.00%) | `waccPlusMinus1pp.summary` | M1 | ✅ |
 | Implied growth move for WACC −1 pp / +1 pp | −4.90 pp / +4.49 pp | `waccPlusMinus1pp.summary` | M1 | ✅ |
 | Slope of implied growth vs WACC (implicit function theorem) | 5.15 / 4.68 / 4.32 pp per pp at 8 / 9 / 10%; vs finite differences: 1.1e-11, 7.4e-15, 9.8e-13 relative | `waccPlusMinus1pp.slopeChecks` | M1 | ✅ |
-| Scale, synthetic DCF, target +15% | 20 drivers: 3 Newton steps, 166 gradients, 83 ms; 200 drivers: 7 projection steps, 10 gradients, 20 ms | `scale` | M1 | ✅ single run, ±30% |
-| Unit tests | 49 Stage 1 + 21 Stage 2 + 22 Stage 3 = 92, all passing | `npm test` | M1 | ✅ |
+| Scale, synthetic DCF, target +15% | 20 drivers: 3 Newton steps, 166 gradients, 113 ms; 200 drivers: 7 projection steps, 10 gradients, 31 ms | `scale` | M1 | ✅ single run, ±30% |
+| Unit tests | 49 Stage 1 + 21 Stage 2 + 26 Stage 3 = 96, all passing | `npm test` | M1 | ✅ |
 
 ## Model outputs (reference only, not claims)
 

@@ -354,8 +354,31 @@ export class Backsolver {
     };
     const base = evalU(new Float64Array(m));
     if (!Number.isFinite(base.P)) throw new Error(`${this.outputAddr} is not a number in the base case`);
-    const Gref = norm(base.G);
-    if (Gref === 0) throw new Error(`${this.outputAddr} does not depend on any driver`);
+    const P0 = base.P;
+    const hitAtBase = Math.abs(P0 - target) <= tolF;
+    // Where the search starts: the base case, unless the base case is flat (every driver's slope
+    // is exactly 0 there: the output sits at a peak or trough, or a MAX / IF is on a flat branch).
+    // A zero slope says nothing about which way to go, and doesn't mean the output can't move.
+    // So, like the one-driver solver, probe outward along each driver, both ways, in doubling steps
+    // (1/16 up to 64 normal-sized moves), and start from the nearest probe where the output has a
+    // slope (among equally near ones, the one whose output is nearest the target).
+    let start = { u: new Float64Array(m), P: P0, G: base.G };
+    if (norm(base.G) === 0 && !hitAtBase) {
+      let found: typeof start | null = null;
+      for (let k = -4; k <= 6 && !found; k++) {
+        for (let j = 0; j < m; j++) for (const sg of [1, -1]) {
+          const uu = new Float64Array(m); uu[j] = sg * 2 ** k;
+          const e = evalU(uu);
+          if (!Number.isFinite(e.P) || !e.G.every(Number.isFinite) || norm(e.G) === 0) continue;
+          if (!found || Math.abs(e.P - target) < Math.abs(found.P - target)) found = { u: uu, P: e.P, G: e.G };
+        }
+      }
+      if (!found) throw new Error(`${this.outputAddr} does not depend on any driver (its slope is 0 at the base case and at every probe up to 64 normal-sized moves along each driver)`);
+      start = found;
+      const j = start.u.findIndex((x) => x !== 0);
+      warnings.push(`flat base case (every driver's slope is 0 there): the search started ${Math.abs(start.u[j])} normal-sized moves ${start.u[j] > 0 ? 'up' : 'down'} along "${this.drivers[j].name}", so the answer is the closest point found from there and may not be the closest overall`);
+    }
+    const Gref = norm(start.G) || 1;
     const useH = m <= this.opts.hessianUpTo;
     const hess = (u: Float64Array): Float64Array => {
       const H = new Float64Array(m * m);
@@ -425,15 +448,23 @@ export class Backsolver {
       return { ok: false, u, lam, P, G };
     };
 
-    // Start from the straight-line answer: u = λ0·G0 with λ0 chosen so the linearised output hits T.
-    const P0 = base.P;
-    const lin = Float64Array.from(base.G, (x) => (x * (target - P0)) / (Gref * Gref));
+    // Straight-line prediction from the base gradient (undefined when the base case is flat).
+    const nb2 = dot(base.G, base.G);
+    const lin = nb2 > 0 ? Float64Array.from(base.G, (x) => (x * (target - P0)) / nb2) : undefined;
+    // Walk the target from the start point's output to the real target (all at once if Newton can).
+    const Ps = start.P, Gs2 = dot(start.G, start.G);
     let u = new Float64Array(m), lam = 0, s = 0, ds = 1, converged = false, method = 'Newton on the optimality conditions';
-    if (Math.abs(P0 - target) <= tolF) { converged = true; s = 1; }
+    if (hitAtBase) { converged = true; s = 1; }
+    if (!hitAtBase && start.u.some((x) => x !== 0)) method += ', started from a probe point (flat base case)';
     while (s < 1) {
-      const sn = Math.min(1, s + ds), T = P0 + sn * (target - P0);
-      const lam0 = s === 0 ? (T - P0) / (Gref * Gref) : lam;
-      const u0 = s === 0 ? Float64Array.from(base.G, (x) => x * lam0) : u;
+      const sn = Math.min(1, s + ds), T = Ps + sn * (target - Ps);
+      let u0 = u, lam0 = lam;
+      if (s === 0) {
+        // First guess: the straight-line step from the start point to the surface where output = T,
+        // and the λ that best fits u = λG there. From the base case this is u = λ0·G0, λ0 = (T − P0)/‖G0‖².
+        u0 = Float64Array.from(start.u, (x, i) => x + (start.G[i] * (T - Ps)) / Gs2);
+        lam0 = dot(u0, start.G) / Gs2;
+      }
       const r = kkt(u0, lam0, T, sn === 1);
       if (r.ok) { u = r.u; lam = r.lam; s = sn; ds = Math.min(1 - s, 2 * ds); converged = s === 1; continue; }
       ds /= 2;
@@ -441,15 +472,18 @@ export class Backsolver {
       method = 'Newton on the optimality conditions, with the target walked in from the base output (continuation)';
     }
     if (!useH) method += '; no curvature matrix (too many drivers), so steps are minimum-norm projections';
-    const res = this.finish(target, Float64Array.from(u, (x, i) => x * sig[i]), converged, iterations, method, t0, c0, warnings, Float64Array.from(lin, (x, i) => x * sig[i]));
+    const res = this.finish(target, Float64Array.from(u, (x, i) => x * sig[i]), converged, iterations, method, t0, c0, warnings, lin && Float64Array.from(lin, (x, i) => x * sig[i]));
     // Second-order check: curvature of the distance along the surface of equal price.
-    if (converged && useH) {
+    // (Not needed when the base case already hits the target: distance 0 can't be beaten.)
+    if (converged && useH && res.distance > 0) {
       const uu = Float64Array.from(res.u);
       const G = Float64Array.from(res.gradientAtAnswer, (x, i) => x * sig[i]);
       const H = hess(uu);
       this.reset();
       res.reducedHessianMinEig = reducedMinEig(H, G, res.lambda, m);
-      if (!(res.reducedHessianMinEig > 0)) res.warnings.push('the answer is a stationary point but not a local minimum of the distance (the curvature along the price surface is not positive)');
+      const e = res.reducedHessianMinEig;
+      if (Math.abs(e) <= 1e-6) res.warnings.push('tie: the curvature along the price surface is zero, so nearby points on it are (almost) exactly as close; the answer is one of them, not the only one');
+      else if (!(e > 0)) res.warnings.push('the answer is a stationary point but not a local minimum of the distance (the curvature along the price surface is negative)');
       res.evaluations = { values: this.counts.values - c0.values, gradients: this.counts.gradients - c0.gradients };
     }
     return res;

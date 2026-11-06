@@ -111,7 +111,7 @@ path), which is slower to converge per step but needs one gradient per step.
 
 1. **Hits the target**: `|output − target| ≤ 1e-12 × max(1, |target|)`, recomputed from scratch.
 2. **Tangency ≤ 1e-9.** Worst on the test workbooks: 7.7e-10 (LBO, through 5 loops and an IRR);
-   1.0e-16 to 4.8e-16 on the three-statement model.
+   3.2e-16 to 5.1e-16 on the three-statement model.
 3. **A minimum, not a saddle.** The tangency condition also holds at the *farthest* point or a
    saddle. We check the curvature of the distance along the price surface; it must be positive.
    Smallest values: 1.044, 1.040, 1.000 (three-statement) and 1.0003 (LBO).
@@ -243,8 +243,8 @@ it's only a speed and convergence test). Target: base price + 15%.
 
 | Drivers | What moves | Method | Steps | Gradient evaluations | Time | Miss | Tangency |
 |---|---|---|---|---|---|---|---|
-| 20 | one growth and one margin driver per segment | Newton with curvature | 3 | 166 | 83 ms | 1.8e-15 | 3.3e-16 |
-| 200 | every growth and margin cell on its own | projection steps (no curvature matrix) | 7 | 10 | 20 ms | 7.1e-15 | 1.2e-10 |
+| 20 | one growth and one margin driver per segment | Newton with curvature | 3 | 166 | 113 ms | 1.8e-15 | 2.7e-16 |
+| 200 | every growth and margin cell on its own | projection steps (no curvature matrix) | 7 | 10 | 31 ms | 1.8e-15 | 1.2e-10 |
 
 The 200-driver case is faster because it skips the curvature matrix (2 gradients per driver per
 step); one gradient costs about the same however many drivers there are, thanks to Stage 2. Single
@@ -252,21 +252,23 @@ run on M1; timings vary by roughly ±30% between runs.
 
 ## Unit tests (`tests/solve.test.ts`)
 
-22 tests with answers derived by hand, not by our engine:
+26 tests with answers derived by hand, not by our engine:
 
 - **One input:** Gordon growth (`g = r − D/P`); a pole that throws plain Newton far off
   (`10/(1 − x) = 1000`); through a circular reference (`x = p + 0.5x`); through IRR (annuity
   factor); a flat start; the answer's slopes (`dg/dr = 1`, `dg/dD = −1/P`); the workbook restored.
 - **Closest point:** a linear model vs the closed form `d = σ²·g·(T − P0) / Σσ²g²`; σ twice as big
   → 4 times the move; circle (from (3, 4) to radius 10 → (6, 8)); hyperbola (from (1, 1) to
-  `a·b = 4` → (2, 2), curvature check sees a minimum); scale drivers; shift groups; refusing
-  formula cells, text cells and cells claimed twice.
+  `a·b = 4` → (2, 2), curvature check sees a minimum); a flat base case (zero slope everywhere at
+  the start): already on target → no move, `a² + 4b² = 4` → (0, ±1), `a² + b² = 4` → distance 2
+  flagged as a tie, and an output that really ignores the drivers refused; scale drivers; shift
+  groups; refusing formula cells, text cells and cells claimed twice.
 - **Curves:** `a·b = 4` ending exactly on the box; `a² − b² = 1` (two separate pieces, both found);
   a circle (closed loop); a MAX corner walked through in one piece.
 - **Real workbooks:** the three-statement $30 answer (hit, minimum, workbook restored) and the LBO
   margin step for 20% IRR vs plain bisection on the engine (to 1e-12).
 
-`npm test`: 92 tests (49 Stage 1 + 21 Stage 2 + 22 Stage 3), all passing.
+`npm test`: 96 tests (49 Stage 1 + 21 Stage 2 + 26 Stage 3), all passing.
 
 ## Limits (reported, not hidden)
 
@@ -275,6 +277,11 @@ run on M1; timings vary by roughly ±30% between runs.
 - **Closest is local.** Newton finds a nearby minimum; the brute-force checks that prove nothing is
   closer run in `npm run stage3` on the test cases, not on every `solve()` call. A model with several
   separate pieces of the price surface could have a closer point the solver didn't start near.
+- **Flat base case.** If every driver's slope is exactly 0 at the base case (a peak or trough, or a
+  MAX / IF on a flat branch), the slope can't say which way to go. The solver probes outward along
+  each driver (1/16 to 64 normal moves), starts from the nearest probe that has a slope, and says so
+  in a warning: the answer is the closest point found from there, not guaranteed the closest overall.
+  When the curvature check finds a tie (nearby points exactly as close), it says that too.
 - **Kinks.** If the path to the answer crosses an IF / MIN / MAX switch, the slope jumps. The
   solver usually still converges (the line search protects it), but the answer can sit right next
   to a switch; `nearKinks` lists those within one normal move.

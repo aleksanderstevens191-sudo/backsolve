@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-06T04:06:10.435Z",
+ "generatedAt": "2026-11-06T04:12:34.190Z",
  "machine": {
   "os": "Linux 6.18.44-fc-v242",
   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
@@ -31,7 +31,7 @@
      "values": 1,
      "gradients": 4
     },
-    "ms": 22.178245000000004,
+    "ms": 22.50006300000001,
     "warnings": []
    },
    "closestRootScan": {
@@ -66,7 +66,7 @@
      "values": 1,
      "gradients": 7
     },
-    "ms": 22.23232399999995,
+    "ms": 19.780018999999925,
     "warnings": []
    },
    "closestRootScan": {
@@ -101,7 +101,7 @@
      "values": 1,
      "gradients": 7
     },
-    "ms": 19.117585000000076,
+    "ms": 9.977120999999897,
     "warnings": []
    },
    "closestRootScan": {
@@ -136,7 +136,7 @@
      "values": 1,
      "gradients": 6
     },
-    "ms": 20.27264100000002,
+    "ms": 16.586505999999986,
     "warnings": []
    },
    "closestRootScan": {
@@ -166,53 +166,53 @@
     "target": 30,
     "baseValue": 26.098949095746324,
     "converged": true,
-    "value": 30.000000000000014,
-    "missBy": 1.4210854715202004e-14,
+    "value": 29.999999999999986,
+    "missBy": -1.4210854715202004e-14,
     "d": [
-     0.013571664860427103,
-     0.016839237279300163
+     0.013571664860427077,
+     0.01683923727930014
     ],
     "u": [
-     1.3571664860427104,
-     1.6839237279300163
+     1.3571664860427077,
+     1.6839237279300139
     ],
-    "distance": 2.162752873613451,
-    "lambda": 1.1490985250847174,
-    "tangency": 1.0266758057939695e-16,
+    "distance": 2.162752873613448,
+    "lambda": 1.149098525084716,
+    "tangency": 5.133379028969855e-16,
     "drivers": [
      {
       "name": "Revenue growth (every year)",
       "mode": "shift",
       "sigma": 0.01,
       "sigmaRule": "values between −1 and 1 look like rates: 1 percentage point is one normal-sized move",
-      "change": 0.013571664860427103,
-      "normalMoves": 1.3571664860427104,
-      "shareOfDistance": 0.3937789147750859,
+      "change": 0.013571664860427077,
+      "normalMoves": 1.3571664860427077,
+      "shareOfDistance": 0.39377891477508553,
       "cells": [
        {
         "addr": "Assumptions!C5",
         "base": 0.08,
-        "implied": 0.0935716648604271
+        "implied": 0.09357166486042708
        },
        {
         "addr": "Assumptions!D5",
         "base": 0.07,
-        "implied": 0.08357166486042711
+        "implied": 0.08357166486042708
        },
        {
         "addr": "Assumptions!E5",
         "base": 0.06,
-        "implied": 0.0735716648604271
+        "implied": 0.07357166486042707
        },
        {
         "addr": "Assumptions!F5",
         "base": 0.05,
-        "implied": 0.0635716648604271
+        "implied": 0.06357166486042708
        },
        {
         "addr": "Assumptions!G5",
         "base": 0.04,
-        "implied": 0.0535716648604271
+        "implied": 0.05357166486042708
        }
       ]
      },
@@ -221,8 +221,8 @@
       "mode": "shift",
       "sigma": 0.01,
       "sigmaRule": "values between −1 and 1 look like rates: 1 percentage point is one normal-sized move",
-      "change": 0.016839237279300163,
-      "normalMoves": 1.6839237279300163,
+      "change": 0.01683923727930014,
+      "normalMoves": 1.6839237279300139,
       "shareOfDistance": 0.6062210852249144,
       "cells": [
        {
@@ -254,30 +254,30 @@
      }
     ],
     "linearPrediction": [
-     0.01351997884763196,
-     0.018076802075935358
+     0.013519978847631958,
+     0.018076802075935355
     ],
     "gradientAtAnswer": [
-     118.10706013591424,
-     146.54302404625128
+     118.10706013591418,
+     146.5430240462512
     ],
     "iterations": 3,
     "evaluations": {
      "values": 1,
      "gradients": 22
     },
-    "ms": 25.38086599999997,
+    "ms": 22.561408999999912,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
-    "reducedHessianMinEig": 1.0444422004551355
+    "reducedHessianMinEig": 1.0444422004576284
    },
    "bruteForce": {
     "method": "closest point among the traced curve points (curve traced independently of the answer)",
     "curvePoints": 130,
     "closestFound": 2.1651440409477187,
-    "solverDistance": 2.162752873613451,
-    "ratio": 1.0011056128341989,
+    "solverDistance": 2.162752873613448,
+    "ratio": 1.0011056128342004,
     "pass": true
    },
    "pass": true
@@ -379,8 +379,8 @@
      }
     ],
     "linearPrediction": [
-     0.02604802962437889,
-     0.008706838252015287
+     0.026048029624378882,
+     0.008706838252015285
     ],
     "gradientAtAnswer": [
      116.52300251659263,
@@ -391,7 +391,7 @@
      "values": 1,
      "gradients": 22
     },
-    "ms": 14.961197000000084,
+    "ms": 21.30759799999987,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -420,19 +420,19 @@
     "missBy": 0,
     "d": [
      0.0052990342743331155,
-     0.006289863901723353,
+     0.006289863901723354,
      -0.006271149448619666,
      -0.008361532598159553
     ],
     "u": [
      0.5299034274333115,
-     0.6289863901723353,
+     0.6289863901723354,
      -0.6271149448619666,
      -0.8361532598159552
     ],
     "distance": 1.3299800560150035,
     "lambda": 0.4444281786048601,
-    "tangency": 3.123410882943618e-16,
+    "tangency": 3.2330374169917263e-16,
     "drivers": [
      {
       "name": "Revenue growth (every year)",
@@ -475,9 +475,9 @@
       "mode": "shift",
       "sigma": 0.01,
       "sigmaRule": "values between −1 and 1 look like rates: 1 percentage point is one normal-sized move",
-      "change": 0.006289863901723353,
-      "normalMoves": 0.6289863901723353,
-      "shareOfDistance": 0.22366201844469535,
+      "change": 0.006289863901723354,
+      "normalMoves": 0.6289863901723354,
+      "shareOfDistance": 0.22366201844469547,
       "cells": [
        {
         "addr": "Assumptions!C6",
@@ -596,7 +596,7 @@
      "values": 1,
      "gradients": 38
     },
-    "ms": 25.92415600000004,
+    "ms": 27.129989999999907,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -705,7 +705,7 @@
      "values": 1,
      "gradients": 16
     },
-    "ms": 22.79255700000067,
+    "ms": 27.349348000000646,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -2200,7 +2200,7 @@
     "values": 1981,
     "gradients": 388
    },
-   "ms": 740.3171650000004
+   "ms": 783.4946670000008
   },
   {
    "label": "LBO, IRR 20%: revenue growth vs margin improvement per year",
@@ -3565,7 +3565,7 @@
     "values": 2082,
     "gradients": 358
    },
-   "ms": 3886.1905079999988
+   "ms": 3702.6914370000004
   }
  ],
  "waccPlusMinus1pp": {
@@ -3618,9 +3618,9 @@
     "missBy": 7.283063041541027e-13,
     "dShiftDWaccIft": 4.897782054929497,
     "closestPointGrowthPlusMargin": {
-     "growthShift": 0.004385920517955667,
+     "growthShift": 0.004385920517955668,
      "marginShift": 0.005649061707859552,
-     "distance": 0.7151796765081456
+     "distance": 0.7151796765081457
     }
    },
    {
@@ -3644,9 +3644,9 @@
     "missBy": 1.0658141036401503e-14,
     "dShiftDWaccIft": 4.678643096719081,
     "closestPointGrowthPlusMargin": {
-     "growthShift": 0.013571664860427103,
-     "marginShift": 0.016839237279300163,
-     "distance": 2.162752873613451
+     "growthShift": 0.013571664860427077,
+     "marginShift": 0.01683923727930014,
+     "distance": 2.162752873613448
     }
    },
    {
@@ -3683,9 +3683,9 @@
     "missBy": 1.0658141036401503e-14,
     "dShiftDWaccIft": 4.403648662242919,
     "closestPointGrowthPlusMargin": {
-     "growthShift": 0.02717868922456107,
-     "marginShift": 0.03221321522279034,
-     "distance": 4.2147032908083615
+     "growthShift": 0.027178689224561063,
+     "marginShift": 0.03221321522279033,
+     "distance": 4.214703290808361
     }
    },
    {
@@ -3696,9 +3696,9 @@
     "missBy": 1.1013412404281553e-13,
     "dShiftDWaccIft": 4.323592770759578,
     "closestPointGrowthPlusMargin": {
-     "growthShift": 0.03164655819963113,
-     "marginShift": 0.037019142710187795,
-     "distance": 4.8702377486934765
+     "growthShift": 0.031646558199631095,
+     "marginShift": 0.03701914271018776,
+     "distance": 4.870237748693471
     }
    }
   ],
@@ -5111,7 +5111,7 @@
      "values": 1955,
      "gradients": 364
     },
-    "ms": 727.5093979999983
+    "ms": 723.2890530000004
    },
    {
     "label": "three-statement, $30, WACC 10.00%: growth vs gross margin",
@@ -6663,7 +6663,7 @@
      "values": 2010,
      "gradients": 409
     },
-    "ms": 1039.2914
+    "ms": 810.0931330000003
    }
   ]
  },
@@ -6673,13 +6673,13 @@
    "target": 15.939596745027577,
    "converged": true,
    "missBy": 1.7763568394002505e-15,
-   "tangency": 3.3276457795217874e-16,
+   "tangency": 2.667224029177861e-16,
    "iterations": 3,
    "evaluations": {
     "values": 1,
     "gradients": 166
    },
-   "ms": 83.03705300000001,
+   "ms": 113.22228299999915,
    "method": "Newton on the optimality conditions",
    "pass": true
   },
@@ -6687,14 +6687,14 @@
    "drivers": 200,
    "target": 15.939596745027577,
    "converged": true,
-   "missBy": -7.105427357601002e-15,
-   "tangency": 1.1621055497437473e-10,
+   "missBy": 1.7763568394002505e-15,
+   "tangency": 1.1621055302619979e-10,
    "iterations": 7,
    "evaluations": {
     "values": 1,
     "gradients": 10
    },
-   "ms": 20.28811499999938,
+   "ms": 30.684663,
    "method": "Newton on the optimality conditions; no curvature matrix (too many drivers), so steps are minimum-norm projections",
    "pass": true
   }
