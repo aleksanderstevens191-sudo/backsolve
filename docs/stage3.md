@@ -150,7 +150,26 @@ the default (0.001) is far too loose for a 1e-6 comparison.
 When the `_excel` files come back (saved after Goal Seek), they go in `workbooks/goalseek/excel/`
 and `npm run stage3` compares automatically: `|ours − Excel| ≤ 1e-6 × max(1, |Excel|)`, plus every
 formula cell recomputed at Excel's answer vs Excel's own cached values (1e-9, the Stage 1 rule).
-**Status: waiting for those files.**
+**Status: done on Alek's Mac (2026-11-08, Excel for Mac 16.84, `scripts/excel_goalseek.sh`).**
+
+| Case | Excel's answer | Ours − Excel | Formula cells matching Excel at Excel's answer |
+|---|---|---|---|
+| gs1 | 0.2314723649825464 | 3.1e-16 | 243 / 243 |
+| gs2 | 0.03411527575606613 | −7.0e-13 | 242 / 242 |
+| gs3 | 0.082616377065163 | −5.4e-14 | 242 / 242 |
+| gs4 | none: Excel reports it could not find a solution | — | — |
+
+**gs4 in plain English.** Excel's Goal Seek tries a new margin step, recalculates and looks at how the
+IRR changed. On this LBO the IRR never moved during Goal Seek (it stayed at 19.89%), so Excel saw a
+flat line, took a giant step (to 9 × 10⁷⁰) and gave up. Our best guess is that Goal Seek doesn't
+re-run the circular-loop iterations between its tries, but we haven't proven that. Backsolve
+re-solves all five loops on every step and lands on 0.0051293, hitting 20% to 2.5e-16.
+
+**A bug in the gs4 case file.** `make_goalseek.py` writes the files with openpyxl, which throws away
+Excel's saved numbers. For the LBO that means Excel solves the loops from scratch when the file
+opens, an error gets into the interest loop and stays there, and the IRR shows #VALUE!. The Excel
+run therefore starts from the Excel-saved `lbo_circular.xlsx` and adds the same helper cell. A
+fixed gs4 file is a follow-up.
 
 Meanwhile, LibreOffice 24.2.7.2's Goal Seek (`scripts/lo_goalseek.py`) is a second opinion, not
 ground truth:
@@ -165,7 +184,7 @@ ground truth:
 All four agree within 1e-6. gs4 is the interesting one: LibreOffice's own IRR at its answer is
 19.9994%, not 20%, because it doesn't fully re-solve the LBO's five circular blocks between Goal
 Seek steps. Ours re-solves every loop to machine precision, and its IRR at the answer misses 20% by
-2.5e-16. Excel's result on gs4 will tell us which way Excel leans.
+2.5e-16. Excel's own Goal Seek finds no answer on gs4 (above).
 
 **Is it the nearest answer?** Goal Seek finds *a* root, usually the one nearest the start. We scan
 801 points between the base value and our answer (and as far again on the other side); no case has
@@ -289,7 +308,7 @@ run on M1; timings vary by roughly ±30% between runs.
   closest point, not the surface.
 - **The 41 × 41 grid** can't see a piece of curve that fits entirely inside one grid cell (a tiny
   closed loop). Make the box smaller or the grid finer if that matters.
-- **Excel Goal Seek comparison: pending** Alek's four saved files. Until then, only LibreOffice
-  (not ground truth) has been compared.
+- **Excel Goal Seek on circular models:** on gs4 Excel's own Goal Seek finds no answer, so that case
+  has no Excel number to match. Only LibreOffice (not ground truth) was compared there.
 - **Excel's own Goal Seek is not exact**: it stops within Maximum Change of the goal (1e-9 in our
   case files). The 1e-6 comparison leaves room for that.

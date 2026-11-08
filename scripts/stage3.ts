@@ -98,7 +98,15 @@ const goalSeekRows = cases.map((c) => {
     row.excel = { savedBy: report.application, answer: excelAnswer, excelsOutputAtItsAnswer: excelOutput, excelMissBy: excelOutput - c.toValue,
       diffOursMinusExcel: diff, tolerance: `|ours − Excel| ≤ ${GS_TOL} × max(1, |Excel|)`, pass: ok,
       forwardCheckAtExcelsAnswer: { compared: fwd.compared, matched: fwd.matched, mismatched: fwd.mismatches.length, noCache: fwd.noCache, maxScaledDiff: fwd.maxScaledDiff, worstCell: fwd.worstCell } };
-  } else row.excel = { status: 'waiting for the Excel-saved file from Alek' };
+  } else {
+    // No saved file: did Excel run and fail? (scripts/excel_goalseek.sh records every attempt.)
+    const runPath = join(root, 'results', 'stage3_goalseek_excel_run.json');
+    const run = existsSync(runPath) ? JSON.parse(readFileSync(runPath, 'utf8')) : null;
+    const rc = run?.cases.find((x: { id: string }) => x.id === c.id);
+    row.excel = rc && !rc.excelReportedSuccess
+      ? { status: `Excel's Goal Seek found no solution (it reported failure; changing cell left at ${rc.changingCellAfter}, output still ${rc.setCellShownAfter}). See results/stage3_goalseek_excel_run.json`, excelFailed: true, excel: run.machine.excel }
+      : { status: 'waiting for the Excel-saved file from Alek' };
+  }
   const e = row.excel as Record<string, unknown>, lr = row.libreoffice as Record<string, number> | undefined;
   console.log(`  ${c.id} ${c.changingCell} for ${c.setCell} = ${c.toValue}: ours ${answer} (miss ${result.missBy.toExponential(1)}, ${result.iterations} Newton steps, ${ms.toFixed(1)} ms)`);
   if (lr) console.log(`      LibreOffice ${lr.answer}  diff ${lr.diffOursMinusLibreOffice.toExponential(2)}  (LibreOffice's own output there misses by ${lr.missBy.toExponential(1)})`);
@@ -269,8 +277,11 @@ function colName(n: number) { let s = ''; while (n > 0) { const m = (n - 1) % 26
 
 // ------------------------------------------------------------------ write
 
-const excelDone = goalSeekRows.every((r) => !(r.excel as { status?: string }).status);
-const overall = failures.length ? 'FAIL' : excelDone ? 'PASS' : 'PASS (Excel Goal Seek comparison pending)';
+const excelOf = (r: Record<string, unknown>) => r.excel as { status?: string; excelFailed?: boolean };
+const excelPending = goalSeekRows.some((r) => excelOf(r).status && !excelOf(r).excelFailed);
+const excelFailedIds = goalSeekRows.filter((r) => excelOf(r).excelFailed).map((r) => r.id);
+const overall = failures.length ? 'FAIL' : excelPending ? 'PASS (Excel Goal Seek comparison pending)'
+  : excelFailedIds.length ? `PASS (Excel's own Goal Seek found no solution for ${excelFailedIds.join(', ')}; every other case matches Excel)` : 'PASS';
 const slim = (c: { curve: CurveResult }) => ({ ...c.curve, branches: c.curve.branches.map((b) => ({ ...b, points: b.points.map((p) => ({ d: p.d, values: p.values, missBy: p.missBy })) })) });
 mkdirSync(join(root, 'results'), { recursive: true });
 writeFileSync(join(root, 'results', 'stage3_backsolve.json'), JSON.stringify({

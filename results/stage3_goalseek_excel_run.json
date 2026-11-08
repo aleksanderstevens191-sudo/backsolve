@@ -1,0 +1,50 @@
+{
+ "generatedAt": "2026-11-08T22:58:30.603802+00:00",
+ "machine": {
+  "what": "Alek's Mac",
+  "cpu": "Apple M4 Pro",
+  "os": "macOS 27.0.1",
+  "excel": "Microsoft Excel for Mac 16.84.24041420"
+ },
+ "method": "AppleScript `goal seek` (Range.GoalSeek), iterative calc on, Maximum Change 1e-9, 1000 iterations",
+ "note": "Numbers here are AppleScript's ~12-digit display. Full-precision answers are read from the saved files by `npm run stage3` (results/stage3_backsolve.json goalSeek[].excel).",
+ "cases": [
+  {
+   "id": "gs1",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.231472364983",
+   "setCellShownAfter": "$30.00",
+   "setCellShownBefore": "$26.10",
+   "savedFile": true
+  },
+  {
+   "id": "gs2",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.034115275756",
+   "setCellShownAfter": "$30.00",
+   "setCellShownBefore": "$26.10",
+   "savedFile": true
+  },
+  {
+   "id": "gs3",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.082616377065",
+   "setCellShownAfter": "$30.00",
+   "setCellShownBefore": "$26.10",
+   "savedFile": true
+  },
+  {
+   "id": "gs4",
+   "excelReportedSuccess": false,
+   "changingCellAfter": "9.046256971665E+70",
+   "setCellShownAfter": "19.89%",
+   "setCellShownBefore": "19.89%",
+   "savedFile": false
+  }
+ ],
+ "gs4FileAsShipped": {
+  "irrOnOpen": "#VALUE!",
+  "modelC10OnOpen": "#VALUE!",
+  "why": "openpyxl drops cached values; Excel recalculates the circular LBO from scratch and an error gets stuck in the interest loop"
+ }
+}
