@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T22:58:59.006Z",
+ "generatedAt": "2026-11-09T14:27:13.483Z",
  "machine": {
   "os": "Darwin 27.0.0",
   "cpu": "Apple M4 Pro",
@@ -31,12 +31,17 @@
      "values": 1,
      "gradients": 4
     },
-    "ms": 11.305250000000001,
+    "ms": 13.883875000000046,
     "warnings": []
    },
    "closestRootScan": {
     "scanned": "801 points on [-0.15147236498254668, 0.15147236498254668] around the base value",
     "closerRoots": []
+   },
+   "caseFileCachedValues": {
+    "compared": 243,
+    "matched": 243,
+    "noCache": 0
    },
    "libreoffice": {
     "engine": "LibreOffice 24.2.7.2",
@@ -80,12 +85,17 @@
      "values": 1,
      "gradients": 7
     },
-    "ms": 7.878750000000025,
+    "ms": 6.866833000000042,
     "warnings": []
    },
    "closestRootScan": {
     "scanned": "801 points on [-0.009115275755361515, 0.009115275755361515] around the base value",
     "closerRoots": []
+   },
+   "caseFileCachedValues": {
+    "compared": 242,
+    "matched": 242,
+    "noCache": 0
    },
    "libreoffice": {
     "engine": "LibreOffice 24.2.7.2",
@@ -128,12 +138,17 @@
      "values": 1,
      "gradients": 7
     },
-    "ms": 6.1730420000000095,
+    "ms": 7.526666999999975,
     "warnings": []
    },
    "closestRootScan": {
     "scanned": "801 points on [-0.007383622934891254, 0.007383622934891254] around the base value",
     "closerRoots": []
+   },
+   "caseFileCachedValues": {
+    "compared": 242,
+    "matched": 242,
+    "noCache": 0
    },
    "libreoffice": {
     "engine": "LibreOffice 24.2.7.2",
@@ -177,12 +192,17 @@
      "values": 1,
      "gradients": 6
     },
-    "ms": 10.999166999999943,
+    "ms": 10.00770799999998,
     "warnings": []
    },
    "closestRootScan": {
     "scanned": "801 points on [-0.00012934123585555627, 0.00012934123585555627] around the base value",
     "closerRoots": []
+   },
+   "caseFileCachedValues": {
+    "compared": 93,
+    "matched": 93,
+    "noCache": 0
    },
    "libreoffice": {
     "engine": "LibreOffice 24.2.7.2",
@@ -193,7 +213,7 @@
     "withinTol": true
    },
    "excel": {
-    "status": "Excel's Goal Seek found no solution (it reported failure; changing cell left at 9.046256971665E+70, output still 19.89%). See results/stage3_goalseek_excel_run.json",
+    "status": "Excel's Goal Seek found no solution (it reported failure; changing cell left at 9.046256971665E+70, output still 0.19888). See results/stage3_goalseek_excel_run.json",
     "excelFailed": true,
     "excel": "Microsoft Excel for Mac 16.84.24041420"
    }
@@ -309,7 +329,7 @@
      "values": 1,
      "gradients": 22
     },
-    "ms": 16.328917000000047,
+    "ms": 13.52800000000002,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -434,7 +454,7 @@
      "values": 1,
      "gradients": 22
     },
-    "ms": 9.958624999999984,
+    "ms": 10.843916999999692,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -639,7 +659,7 @@
      "values": 1,
      "gradients": 38
     },
-    "ms": 16.21587499999987,
+    "ms": 16.558042000000114,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -748,7 +768,7 @@
      "values": 1,
      "gradients": 16
     },
-    "ms": 14.739250000000084,
+    "ms": 14.014874999999847,
     "method": "Newton on the optimality conditions",
     "nearKinks": [],
     "warnings": [],
@@ -2243,7 +2263,7 @@
     "values": 1981,
     "gradients": 388
    },
-   "ms": 557.2948329999999
+   "ms": 570.0380829999995
   },
   {
    "label": "LBO, IRR 20%: revenue growth vs margin improvement per year",
@@ -3608,7 +3628,7 @@
     "values": 2082,
     "gradients": 358
    },
-   "ms": 2894.884249999999
+   "ms": 2775.6359169999996
   }
  ],
  "waccPlusMinus1pp": {
@@ -5154,7 +5174,7 @@
      "values": 1955,
      "gradients": 364
     },
-    "ms": 542.682417
+    "ms": 551.8059160000012
    },
    {
     "label": "three-statement, $30, WACC 10.00%: growth vs gross margin",
@@ -6706,7 +6726,7 @@
      "values": 2010,
      "gradients": 409
     },
-    "ms": 587.5792920000004
+    "ms": 607.1118750000005
    }
   ]
  },
@@ -6722,7 +6742,7 @@
     "values": 1,
     "gradients": 166
    },
-   "ms": 60.298917000000074,
+   "ms": 53.32458299999962,
    "method": "Newton on the optimality conditions",
    "pass": true
   },
@@ -6737,7 +6757,7 @@
     "values": 1,
     "gradients": 10
    },
-   "ms": 8.872750000000451,
+   "ms": 8.622457999999824,
    "method": "Newton on the optimality conditions; no curvature matrix (too many drivers), so steps are minimum-norm projections",
    "pass": true
   }

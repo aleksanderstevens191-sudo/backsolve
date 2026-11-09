@@ -165,11 +165,15 @@ flat line, took a giant step (to 9 × 10⁷⁰) and gave up. Our best guess is t
 re-run the circular-loop iterations between its tries, but we haven't proven that. Backsolve
 re-solves all five loops on every step and lands on 0.0051293, hitting 20% to 2.5e-16.
 
-**A bug in the gs4 case file.** `make_goalseek.py` writes the files with openpyxl, which throws away
-Excel's saved numbers. For the LBO that means Excel solves the loops from scratch when the file
-opens, an error gets into the interest loop and stays there, and the IRR shows #VALUE!. The Excel
-run therefore starts from the Excel-saved `lbo_circular.xlsx` and adds the same helper cell. A
-fixed gs4 file is a follow-up.
+**The case files keep Excel's numbers.** `make_goalseek.py` used to write the files with openpyxl,
+which throws away the numbers Excel saved. For the LBO that meant Excel had to solve the loops from
+scratch when the file opened, an error got into the interest loop and stayed there, and the IRR
+showed #VALUE!. The script now edits the file's XML directly and keeps every saved number, so each
+file opens exactly as Excel left it (gs4 shows 19.89%). `npm run stage3` checks this: every formula
+cell in each case file matches its cached value. Excel's Goal Seek still finds no answer on the fixed
+gs4, so the failure comes from Goal Seek itself, not from the file. (LibreOffice's numbers above were
+produced from the older openpyxl files. The model and its inputs are the same, but LibreOffice was
+not rerun on the new files.)
 
 Meanwhile, LibreOffice 24.2.7.2's Goal Seek (`scripts/lo_goalseek.py`) is a second opinion, not
 ground truth:

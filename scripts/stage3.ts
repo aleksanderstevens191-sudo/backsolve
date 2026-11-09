@@ -68,6 +68,10 @@ function closerRoots(wb: Workbook, c: Case, d: number, n = 400) {
 console.log('1. One free input: our answer vs Goal Seek');
 const goalSeekRows = cases.map((c) => {
   const { wb } = load(`workbooks/goalseek/${c.file}`);
+  // The case file must carry Excel's saved numbers (so Excel opens it as Excel left it) and they must
+  // match our engine: every formula cell, including the helper, vs its cached value at 1e-9.
+  const caseFwd = compareToCached(wb, 1e-9);
+  check(caseFwd.mismatches.length === 0 && caseFwd.noCache === 0, `${c.id}: case file's cached values missing or not matched`);
   const t = performance.now();
   const { answer, result } = goalSeek(wb, c.setCell, c.toValue, c.changingCell);
   const ms = performance.now() - t;
@@ -79,6 +83,7 @@ const goalSeekRows = cases.map((c) => {
     id: c.id, what: c.what, setCell: c.setCell, toValue: c.toValue, changingCell: c.changingCell, baseValue: base,
     ours: { answer, outputAtAnswer: result.value, missBy: result.missBy, iterations: result.iterations, evaluations: result.evaluations, ms, warnings: result.warnings },
     closestRootScan: scan,
+    caseFileCachedValues: { compared: caseFwd.compared, matched: caseFwd.matched, noCache: caseFwd.noCache },
   };
   const l = lo?.cases.find((x: { id: string }) => x.id === c.id);
   if (l) {

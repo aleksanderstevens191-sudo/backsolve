@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T22:58:30.603802+00:00",
+ "generatedAt": "2026-11-09T14:26:50.209443+00:00",
  "machine": {
   "what": "Alek's Mac",
   "cpu": "Apple M4 Pro",
@@ -13,38 +13,37 @@
    "id": "gs1",
    "excelReportedSuccess": true,
    "changingCellAfter": "0.231472364983",
-   "setCellShownAfter": "$30.00",
-   "setCellShownBefore": "$26.10",
+   "setCellShownOnOpen": "26.0989",
+   "setCellShownBefore": "26.0989",
+   "setCellShownAfter": "30",
    "savedFile": true
   },
   {
    "id": "gs2",
    "excelReportedSuccess": true,
    "changingCellAfter": "0.034115275756",
-   "setCellShownAfter": "$30.00",
+   "setCellShownOnOpen": "$26.10",
    "setCellShownBefore": "$26.10",
+   "setCellShownAfter": "$30.00",
    "savedFile": true
   },
   {
    "id": "gs3",
    "excelReportedSuccess": true,
    "changingCellAfter": "0.082616377065",
-   "setCellShownAfter": "$30.00",
+   "setCellShownOnOpen": "$26.10",
    "setCellShownBefore": "$26.10",
+   "setCellShownAfter": "$30.00",
    "savedFile": true
   },
   {
    "id": "gs4",
    "excelReportedSuccess": false,
    "changingCellAfter": "9.046256971665E+70",
-   "setCellShownAfter": "19.89%",
-   "setCellShownBefore": "19.89%",
+   "setCellShownOnOpen": "0.19888",
+   "setCellShownBefore": "0.19888",
+   "setCellShownAfter": "0.19888",
    "savedFile": false
   }
- ],
- "gs4FileAsShipped": {
-  "irrOnOpen": "#VALUE!",
-  "modelC10OnOpen": "#VALUE!",
-  "why": "openpyxl drops cached values; Excel recalculates the circular LBO from scratch and an error gets stuck in the interest loop"
- }
+ ]
 }
