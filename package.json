@@ -9,7 +9,11 @@
     "stage2": "tsx scripts/stage2.ts",
     "stage3": "tsx scripts/stage3.ts",
     "stage3:chart": "tsx scripts/stage3_chart.ts",
-    "make-workbooks": "python3 scripts/make_workbooks.py"
+    "make-workbooks": "python3 scripts/make_workbooks.py",
+    "stage4:fetch": "node scripts/stage4_fetch.mjs",
+    "stage4:extract": "python3 scripts/stage4_extract.py",
+    "stage4:build": "python3 scripts/make_sec_dcf.py",
+    "stage4": "tsx scripts/stage4.ts"
   },
   "keywords": [],
   "author": "",
