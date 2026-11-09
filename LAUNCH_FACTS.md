@@ -8,7 +8,8 @@ If a number is not in this table, don't post it.
 | Id | What | Details |
 |---|---|---|
 | M2 | Alek's Mac (ground truth only) | Microsoft Excel for Mac 16.0300 recalculated and saved the three test workbooks on 2026-11-05 (iterative calc on, 1000 iterations, max change 1e-9) |
-| M1 | Cloud dev container (Stage 1 and 2 runs) | Linux 6.18.44, Intel Xeon (4 cores), Node v22.23.4, Python 3.13.18, `formulas` 1.3.4, LibreOffice 24.2.7.2 |
+| M3 | Alek's Mac (Stage 3 Excel Goal Seek run, 2026-11-08) | Apple M4 Pro (14 cores), macOS 27.0.1, Microsoft Excel for Mac 16.84 (build 16.84.24041420) driven by `scripts/excel_goalseek.sh`, Node v24.22.1 for `npm run stage3` |
+| M1 | Cloud dev container (Stage 1, 2 and 3 runs) | Linux 6.18.44, Intel Xeon (4 cores), Node v22.23.4, Python 3.13.18, `formulas` 1.3.4, LibreOffice 24.2.7.2 |
 
 ## Stage 1: forward pass (formula engine)
 
@@ -48,6 +49,34 @@ Pass rule: `|AD − FD| ≤ 1e-6 × max(|AD|, |FD|)`; FD = central differences a
 | Unit tests | 49 Stage 1 + 21 Stage 2, all passing | `npm test` | M1 | ✅ |
 | Gradient check on CFI DCF / SEC workbooks | — | — | — | ⏳ need the files |
 
+## Stage 3: solving backwards from a price
+
+Rules: target hit when `|output − target| ≤ 1e-12 × max(1, |target|)`; closest point found when tangency (sine of the angle between the move and the price gradient, in σ units) ≤ 1e-9; one-input answers vs Goal Seek: `|ours − Goal Seek| ≤ 1e-6 × max(1, |Goal Seek|)`. Weighting and checks explained in `docs/stage3.md`.
+
+Note on machines: rows marked M1 come from the cloud run of `results/stage3_backsolve.json` at commit edf3cd5 (`git show edf3cd5:results/stage3_backsolve.json`). The file was regenerated on M3 (Alek's Mac) on 2026-11-08 for the Excel comparison. On M3 the answers agree with M1 to about 1e-15 (last-digit rounding differences between machines), and the timings are different (M3 is faster). The rows marked M3 quote the current file.
+
+| Fact | Value | Source | Machine | Status |
+|---|---|---|---|---|
+| One free input matches **Excel's** Goal Seek to 1e-6 | 3 / 3 cases where Excel finds an answer (gs1–gs3); differences 3.1e-16, −7.0e-13, −5.4e-14 | `results/stage3_backsolve.json` (`goalSeek[].excel`), files in `workbooks/goalseek/excel/` | M3 | ✅ |
+| Every formula cell at Excel's Goal Seek answer matches Excel's cached values (1e-9) | 243/243, 242/242, 242/242 (gs1 includes the helper cell) | `results/stage3_backsolve.json` (`goalSeek[].excel.forwardCheckAtExcelsAnswer`) | M3 | ✅ |
+| Excel's own Goal Seek on the LBO (gs4: margin step for 20% IRR, 5 loops + IRR) | Excel reports no solution: it pushes the margin step to 9.0e+70 and the IRR stays at 19.89%. Same result from the rebuilt case file (opens cleanly, IRR 19.89%) and from `lbo_circular.xlsx` with the helper added (2026-11-08). Backsolve answers 0.0051293 with IRR missing 20% by 2.5e-16 | `results/stage3_goalseek_excel_run.json` (`cases[3]`), `results/stage3_backsolve.json` (`goalSeek[3]`) | M3 | ✅ (Excel limitation; cause not proven) |
+| Goal Seek case files keep Excel's saved numbers | every formula cell matches its cached value: 243/243, 242/242, 242/242, 93/93; Excel shows the target cell on open as $26.10 / $26.10 / $26.10 / 19.89% (gs4 used to open with #VALUE! when the files were written by openpyxl) | `results/stage3_backsolve.json` (`goalSeek[].caseFileCachedValues`), `results/stage3_goalseek_excel_run.json` (`cases[].setCellShownOnOpen`) | M3 | ✅ fixed 2026-11-09 |
+| One free input vs LibreOffice's Goal Seek (second opinion, not ground truth) | 4 / 4 within 1e-6; differences −2.2e-16, 3.2e-12, −1.5e-13, 6.9e-7 | `results/stage3_backsolve.json` (`goalSeek[].libreoffice`), `results/stage3_goalseek_libreoffice.json` | M1 (LibreOffice 24.2.7.2) | ✅ |
+| LBO Goal Seek (margin step for 20% IRR, 5 loops + IRR): output at our answer vs LibreOffice's | ours misses 20% by 2.5e-16; LibreOffice's own IRR at its answer misses by 6.0e-6 | `results/stage3_backsolve.json` (`goalSeek[3]`) | M1 | ✅ |
+| Closest $30 point, three-statement, growth + gross margin, σ = 1 pp each | growth +1.357 pp (avg 6.00% → 7.36%), gross margin +1.684 pp (avg 41.60% → 43.28%), distance 2.163 | `results/stage3_backsolve.json` (`closestPoint[0]`) | M1 | ✅ |
+| Same, margins stickier (σ_margin = 0.5 pp) | growth +2.470 pp, gross margin +0.814 pp, distance 2.958 | `closestPoint[1]` | M1 | ✅ |
+| Same, four drivers (growth, gross margin, SG&A, capex; σ = 1 pp) | +0.530, +0.629, −0.627, −0.836 pp; distance 1.330 | `closestPoint[2]` | M1 | ✅ |
+| LBO, IRR 19.89% → 20%, growth + margin step + exit multiple | +0.011 pp, +0.0034 pp, +0.020x; distance 0.0265 | `closestPoint[3]` | M1 | ✅ |
+| Closest-point answers hit the target | worst miss 8.1e-13 (LBO IRR); tangency ≤ 7.7e-10; curvature along the price surface 1.0 to 1.04 (positive: a true minimum) | `closestPoint[].result` | M1 | ✅ |
+| Brute force finds nothing closer | 2 drivers: closest traced point 2.16514 vs 2.16275 and 2.95795 vs 2.95764; 3+ drivers: 360 rays (131 reached) closest 1.33135 vs 1.32998, 210 rays (114 reached) closest 0.026526 vs 0.026516 | `closestPoint[].bruteForce` | M1 | ✅ |
+| Every growth/margin pair for $30, three-statement (WACC 8 / 9 / 10%) | 122 / 130 / 137 points, one piece each; grid check 62/62, 66/66, 70/70 crossings covered; worst miss 5.3e-14 | `curves[0]`, `waccPlusMinus1pp.curves` | M1 | ✅ |
+| Every growth/margin-step pair for 20% IRR, LBO | 120 points, one piece; 68/68 grid crossings covered; worst miss 3.5e-13 | `curves[1]` | M1 | ✅ |
+| Implied average growth for $30 (growth only) at WACC 8% / 9% / 10% | 4.67% / 9.57% / 14.07% (base case 6.00%) | `waccPlusMinus1pp.summary` | M1 | ✅ |
+| Implied growth move for WACC −1 pp / +1 pp | −4.90 pp / +4.49 pp | `waccPlusMinus1pp.summary` | M1 | ✅ |
+| Slope of implied growth vs WACC (implicit function theorem) | 5.15 / 4.68 / 4.32 pp per pp at 8 / 9 / 10%; vs finite differences: 1.1e-11, 7.4e-15, 9.8e-13 relative | `waccPlusMinus1pp.slopeChecks` | M1 | ✅ |
+| Scale, synthetic DCF, target +15% | 20 drivers: 3 Newton steps, 166 gradients, 113 ms; 200 drivers: 7 projection steps, 10 gradients, 31 ms | `scale` | M1 | ✅ single run, ±30% |
+| Unit tests | 49 Stage 1 + 21 Stage 2 + 26 Stage 3 = 96, all passing | `npm test` | M1, M3 | ✅ |
+
 ## Model outputs (reference only, not claims)
 
 | Fact | Value | Source |
@@ -65,3 +94,7 @@ Pass rule: `|AD − FD| ≤ 1e-6 × max(|AD|, |FD|)`; FD = central differences a
 
 - "Matches Excel" on any workbook other than these three test files (the CFI DCF and SEC model still need their own runs).
 - "Cross-checked against `formulas` on the LBO": `formulas` cannot iterate circular references, so it only confirms the 44 cells upstream of the loops.
+- "Matches Excel's Goal Seek" without the qualifier: true for gs1–gs3. On the circular LBO (gs4) Excel's Goal Seek finds no answer, so there is nothing to match. Say "matches Excel's Goal Seek wherever Excel finds an answer".
+- "Excel's Goal Seek can't handle circular models" in general: shown on one model (gs4). The cause is a guess, not proven.
+- "The market implies X% growth" as a single fact: it's the closest answer under the chosen weights (σ), and it moves about 4.5 to 5 pp per 1 pp of WACC. Always quote the σ's and the WACC with it.
+- "Finds the closest point on any model": the brute-force proof runs on these test cases in `npm run stage3`, not on every solve.

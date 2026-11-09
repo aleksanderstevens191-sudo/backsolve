@@ -1,0 +1,49 @@
+{
+ "generatedAt": "2026-11-09T14:26:50.209443+00:00",
+ "machine": {
+  "what": "Alek's Mac",
+  "cpu": "Apple M4 Pro",
+  "os": "macOS 27.0.1",
+  "excel": "Microsoft Excel for Mac 16.84.24041420"
+ },
+ "method": "AppleScript `goal seek` (Range.GoalSeek), iterative calc on, Maximum Change 1e-9, 1000 iterations",
+ "note": "Numbers here are AppleScript's ~12-digit display. Full-precision answers are read from the saved files by `npm run stage3` (results/stage3_backsolve.json goalSeek[].excel).",
+ "cases": [
+  {
+   "id": "gs1",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.231472364983",
+   "setCellShownOnOpen": "26.0989",
+   "setCellShownBefore": "26.0989",
+   "setCellShownAfter": "30",
+   "savedFile": true
+  },
+  {
+   "id": "gs2",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.034115275756",
+   "setCellShownOnOpen": "$26.10",
+   "setCellShownBefore": "$26.10",
+   "setCellShownAfter": "$30.00",
+   "savedFile": true
+  },
+  {
+   "id": "gs3",
+   "excelReportedSuccess": true,
+   "changingCellAfter": "0.082616377065",
+   "setCellShownOnOpen": "$26.10",
+   "setCellShownBefore": "$26.10",
+   "setCellShownAfter": "$30.00",
+   "savedFile": true
+  },
+  {
+   "id": "gs4",
+   "excelReportedSuccess": false,
+   "changingCellAfter": "9.046256971665E+70",
+   "setCellShownOnOpen": "0.19888",
+   "setCellShownBefore": "0.19888",
+   "setCellShownAfter": "0.19888",
+   "savedFile": false
+  }
+ ]
+}

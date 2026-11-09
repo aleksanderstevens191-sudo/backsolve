@@ -7,6 +7,8 @@
     "typecheck": "tsc",
     "check": "tsx scripts/check.ts",
     "stage2": "tsx scripts/stage2.ts",
+    "stage3": "tsx scripts/stage3.ts",
+    "stage3:chart": "tsx scripts/stage3_chart.ts",
     "make-workbooks": "python3 scripts/make_workbooks.py"
   },
   "keywords": [],

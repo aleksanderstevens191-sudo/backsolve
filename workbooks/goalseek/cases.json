@@ -1,0 +1,45 @@
+{
+  "note": "Stage 3 one-free-input checks. Each case is one Excel Goal Seek: set `setCell` to `toValue` by changing `changingCell`. The helper cell (when present) sits on the changing cell's sheet and just repeats `setCell`, so all three Goal Seek entries are on the sheet the file opens on.",
+  "cases": [
+    {
+      "id": "gs1",
+      "file": "gs1_three_statement_growth.xlsx",
+      "source": "three_statement.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Assumptions!C5",
+      "helper": "Assumptions!B19",
+      "what": "2026 revenue growth that makes the value per share exactly $30"
+    },
+    {
+      "id": "gs2",
+      "file": "gs2_three_statement_terminal_growth.xlsx",
+      "source": "three_statement.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Valuation!B4",
+      "helper": null,
+      "what": "terminal growth that makes the value per share exactly $30"
+    },
+    {
+      "id": "gs3",
+      "file": "gs3_three_statement_wacc.xlsx",
+      "source": "three_statement.xlsx",
+      "setCell": "Valuation!B13",
+      "toValue": 30,
+      "changingCell": "Valuation!B3",
+      "helper": null,
+      "what": "WACC that makes the value per share exactly $30"
+    },
+    {
+      "id": "gs4",
+      "file": "gs4_lbo_margin_step.xlsx",
+      "source": "lbo_circular.xlsx",
+      "setCell": "Returns!B8",
+      "toValue": 0.2,
+      "changingCell": "Inputs!B10",
+      "helper": "Inputs!B19",
+      "what": "yearly EBITDA-margin improvement that makes the LBO's IRR exactly 20% (through 5 circular blocks and IRR)"
+    }
+  ]
+}
